@@ -14,14 +14,9 @@
  */
 
 import * as FA from '@fortawesome/free-solid-svg-icons'
-import PolygonSymbol3D from "@arcgis/core/symbols/PolygonSymbol3D";
-import SimpleFillSymbol from "@arcgis/core/symbols/SimpleFillSymbol";
-import SimpleLineSymbol from "@arcgis/core/symbols/SimpleLineSymbol";
-import WaterSymbol3DLayer from "@arcgis/core/symbols/WaterSymbol3DLayer.js";
 import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
 import SketchViewModel from "@arcgis/core/widgets/Sketch/SketchViewModel";
 import Symbol from "@arcgis/core/symbols/Symbol";
-import SolidEdges3D from "@arcgis/core/symbols/edges/SolidEdges3D.js";
 
 export type ToolkitConfig = {
   id: string;

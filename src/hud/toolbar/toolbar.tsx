@@ -26,7 +26,6 @@ import { Toolkits, ToolkitConfig } from "../tool-config";
 import { useMatch } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { HUDSubGrid } from "../hud-sub-grid";
-import { SketchfabImportTool } from "../../sketch-fab/sketch-fab-importer";
 import { useSceneSettings } from "../../scene/scene-store";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { getStyleName, styleNameMatchesGroup, webStyleGroupItemsQueryOptions, webStyleGroupListQueryOptions } from "../../scene/web-styles";
@@ -44,8 +43,6 @@ export function Toolbar(props: { identityDialog: boolean, selectedToolkit: strin
 
   const staticToolkits = Toolkits
     .filter(toolkit => toolkit.tools != null);
-
-  const gltfToolkit = Toolkits.find(toolkit => toolkit.id === 'gltf')!;
 
   const isRootRoute = useMatch("/") != null;
 
@@ -132,11 +129,6 @@ export function Toolbar(props: { identityDialog: boolean, selectedToolkit: strin
             </Toolkit>
           ))
         }
-        {/*<ToolkitButton onPress={() => props.toggleToolkit('gltf')} isActive={props.selectedToolkit === 'gltf'}>
-          <span >{<Icon icon={gltfToolkit.icon} />}</span>
-          <span className="text-xs">{gltfToolkit.name}</span>
-          <SketchfabImportTool onComplete={() => props.toggleToolkit('gltf')} />
-        </ToolkitButton>*/}
       </GraphicsLayer>
 
       <Submission
