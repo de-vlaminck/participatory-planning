@@ -132,11 +132,11 @@ export function Toolbar(props: { identityDialog: boolean, selectedToolkit: strin
             </Toolkit>
           ))
         }
-        <ToolkitButton onPress={() => props.toggleToolkit('gltf')} isActive={props.selectedToolkit === 'gltf'}>
+        {/*<ToolkitButton onPress={() => props.toggleToolkit('gltf')} isActive={props.selectedToolkit === 'gltf'}>
           <span >{<Icon icon={gltfToolkit.icon} />}</span>
           <span className="text-xs">{gltfToolkit.name}</span>
           <SketchfabImportTool onComplete={() => props.toggleToolkit('gltf')} />
-        </ToolkitButton>
+        </ToolkitButton>*/}
       </GraphicsLayer>
 
       <Submission
@@ -152,19 +152,23 @@ function useTool(props: EditorToolConfig) {
   const view = useSceneView();
   const layer = useGraphicsContext();
   const editor = useEditor();
+  const sceneSettings = useSceneSettings();
   const { data: settings } = useSuspenseQuery(useSettingsQueryOptions());
+  const selectedParcel = useAccessorValue(() => sceneSettings.selectedParcel);
   const polygon = useMemo(() => new Polygon({
     rings: [settings.planningArea],
     spatialReference: SpatialReference.WebMercator
   }), [settings.planningArea])
+  const boundary = selectedParcel ?? polygon;
 
   const mutation = useMutation({
     mutationFn: () => {
+      sceneSettings.graphics = true;
       const operation = createGeometry({
         view,
         layer,
         symbol: props.symbol,
-        boundary: polygon
+        boundary
       })
 
       editor.applyOperation(operation);

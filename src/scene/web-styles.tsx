@@ -98,12 +98,8 @@ export function styleNameMatchesGroup(
   styleName: string,
 ): boolean {
   switch (category) {
-    case "icons":
-      return styleName === "EsriIconsStyle";
     case "trees":
       return styleName === "EsriRealisticTreesStyle";
-    case "vehicles":
-      return styleName === "EsriRealisticTransportationStyle";
     default:
       return false;
   }

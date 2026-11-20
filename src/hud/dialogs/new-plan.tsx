@@ -24,9 +24,8 @@ import {
   useSettingsQueryOptions,
 } from "../../scene/settings";
 import { ErrorBoundary, FallbackProps } from "react-error-boundary";
-import { useWebScene } from "../../arcgis/components/web-scene";
-import { useAccessorValue } from "../../arcgis/hooks/useAccessorValue";
 import { useSearchPreservingNavigate } from "../../utilities/hooks";
+import thumbnailUrl from "../../../treemap.jpg";
 
 function InvalidSettinsgBoundary(props: FallbackProps) {
   const [, setParams] = useSearchParams();
@@ -86,38 +85,30 @@ export function NewPlanModal() {
 }
 
 function NewPlan(props: { onStart: () => void; onSkip: () => void }) {
-  const scene = useWebScene();
-
   const { data: settings } = useSuspenseQuery(useSettingsQueryOptions());
-
-  const thumbnailUrl = useAccessorValue(() => {
-    const portalItem = scene.portalItem;
-    if (portalItem == null) return undefined;
-    return portalItem.thumbnailUrl ?? portalItem.getThumbnailUrl(400);
-  });
 
   const navigate = useSearchPreservingNavigate();
 
   return (
     <div className="flex gap-6">
       <figure className="flex-none w-48 relative -my-6 -ms-6 flex items-end">
-        {thumbnailUrl ? (
-          <img
-            className="absolute inset-0 w-full h-full object-cover"
-            src={thumbnailUrl}
-          />
-        ) : (
-          <div className="bg-slate-400 absolute inset-0 w-full h-full" />
-        )}
+        <img
+          className="absolute inset-0 w-full h-full object-cover"
+          src={thumbnailUrl}
+          alt=""
+        />
         <figcaption className="bg-white/60 py-2 px-4 w-full backdrop-blur-lg text-sm">
           {settings.planningAreaName}
         </figcaption>
       </figure>
       <div className="flex flex-col gap-4">
         <Heading slot="title" className="text-xl">
-          Participatory planning
+          Tree Request
         </Heading>
         <ul className="list-disc ps-8 flex flex-col gap-1">
+          <li>
+            Begin by seaching for your property address in the search bar at the top of the page. Then add tree points to your property by clicking on the map.
+          </li>
           <li>
             When creating shapes, either double click or press <Code>C</Code> to
             complete.

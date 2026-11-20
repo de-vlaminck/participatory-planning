@@ -31,13 +31,17 @@ function Timeline() {
 
   const slides = useAccessorValue(() => (scene.presentation.slides.map(slide => slide.id), scene.presentation.slides.toArray())) ?? [];
 
-  return (
+  {/* Removed for now, as we don't have any slides in the webscene. Can add back in later if we want to use slides.
+
+    return (
     <HUDSubBar>
       {slides.map(slide => (<HUDButton key={slide.id} onPress={() => {
         slide.applyTo(view)
       }}>{slide.title.text}</HUDButton>))}
     </HUDSubBar>
   );
+
+  */}
 }
 
 export function HUD() {

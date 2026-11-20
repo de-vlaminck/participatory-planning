@@ -38,6 +38,8 @@ import { FocusAreaGraphic } from "./focus-area-graphic";
 import FeatureFilter from "@arcgis/core/layers/support/FeatureFilter.js";
 import { useSceneSettings } from "./scene-store";
 import { useLocationState } from "../utilities/hooks";
+import FeatureLayer from "@arcgis/core/layers/FeatureLayer.js";
+import Search from "@arcgis/core/widgets/Search.js";
 
 export function Scene({ children }: PropsWithChildren) {
   const { data: settings } = useSuspenseQuery(useSettingsQueryOptions());
@@ -73,6 +75,80 @@ export function View({ children }: PropsWithChildren) {
   const drawViewpoint = useAccessorValue(
     () => scene.presentation.slides.getItemAt(0)?.viewpoint,
   );
+
+  useEffect(() => {
+    const sceneView = view.current;
+    if (!sceneView) return;
+
+    let disposed = false;
+    let search: Search | undefined;
+    const searchHandles: { remove(): void }[] = [];
+
+    const initializeSearch = async () => {
+      await scene.load();
+      if (disposed) return;
+      scene.ground.navigationConstraint = { type: "stay-above" };
+
+      const layer = scene.layers.find((item) => item.title === "MplsParcels");
+      if (!(layer instanceof FeatureLayer)) {
+        throw new Error('The web scene does not contain a "MplsParcels" feature layer.');
+      }
+      const parcelLayer = layer;
+
+      await parcelLayer.load();
+      if (disposed) return;
+      if (!parcelLayer.fields.some((field) => field.name === "FullAddress")) {
+        throw new Error('The "MplsParcels" layer does not contain a "FullAddress" field.');
+      }
+
+      search = new Search({
+        view: sceneView,
+        includeDefaultSources: false,
+        searchAllEnabled: false,
+        popupEnabled: false,
+        sources: [
+          {
+            layer: parcelLayer,
+            searchFields: ["FullAddress"],
+            displayField: "FullAddress",
+            name: "Parcels",
+            placeholder: "Search property address",
+            suggestionTemplate: "{FullAddress}",
+            searchTemplate: "{FullAddress}",
+            exactMatch: false,
+            minSuggestCharacters: 3,
+          },
+        ],
+      });
+      searchHandles.push(
+        search.on("select-result", ({ result }) => {
+          const geometry = result.feature.geometry;
+          if (!(geometry instanceof Polygon)) {
+            console.error("Selected parcel search result has no polygon geometry.", result.feature);
+            return;
+          }
+          sceneSettings.selectedParcel = geometry.clone();
+        }),
+        search.on("search-clear", () => {
+          sceneSettings.selectedParcel = null;
+        }),
+      );
+      sceneView.ui.add(search, "top-right");
+    };
+
+    void initializeSearch().catch((error: unknown) => {
+      if (!disposed) console.error("Could not initialize parcel address search.", error);
+    });
+
+    return () => {
+      disposed = true;
+      for (const handle of searchHandles) handle.remove();
+      if (search) {
+        sceneView.ui.remove(search);
+        search.destroy();
+      }
+    };
+  }, [scene, sceneSettings]);
 
   const isRootRoute = useMatch("/") != null;
   const state = useLocationState();

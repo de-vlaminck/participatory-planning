@@ -20,6 +20,7 @@ import {
 } from "@arcgis/core/core/accessorSupport/decorators";
 import { createContext, PropsWithChildren, useContext, useState } from "react";
 import { useMatch } from "react-router-dom";
+import Polygon from "@arcgis/core/geometry/Polygon.js";
 
 @subclass()
 export class SceneSettings extends Accessor {
@@ -43,6 +44,9 @@ export class SceneSettings extends Accessor {
 
   @property()
   viewpoint: "initial" | "perimeter" | "drawing" | null = null;
+
+  @property()
+  selectedParcel: Polygon | null = null;
 
   setConfig(
     config: keyof typeof SceneStateConfig | keyof typeof SceneStateConfigIndex,
@@ -115,7 +119,7 @@ const SceneStateConfig = {
     surface: false,
     focusArea: true,
     basemap: false,
-    buildings: false,
+    buildings: true,
     graphics: false,
     viewpoint: "drawing",
   },
@@ -124,7 +128,7 @@ const SceneStateConfig = {
     surface: false,
     focusArea: true,
     basemap: false,
-    buildings: false,
+    buildings: true,
     graphics: true,
     viewpoint: null,
   },
