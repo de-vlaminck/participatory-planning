@@ -117,7 +117,7 @@ const SceneStateConfig = {
   "drawing-overview": {
     perimeter: false,
     surface: false,
-    focusArea: true,
+    focusArea: false,
     basemap: false,
     buildings: true,
     graphics: false,

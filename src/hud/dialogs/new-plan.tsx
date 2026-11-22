@@ -127,7 +127,7 @@ function NewPlan(props: { onStart: () => void; onSkip: () => void }) {
               props.onStart();
               navigate("/plan", {
                 state: {
-                  playIntro: true,
+                  playIntro: false,
                   previousLocationPathname: location.pathname,
                 },
               });
@@ -135,20 +135,6 @@ function NewPlan(props: { onStart: () => void; onSkip: () => void }) {
             className="p-2 bg-sky-600 text-white rounded-lg"
           >
             Start planning
-          </Button>
-          <Button
-            onPress={async () => {
-              props.onSkip();
-              navigate("/plan", {
-                state: {
-                  playIntro: false,
-                  previousLocationPathname: location.pathname,
-                },
-              });
-            }}
-            className="p-2 text-sky-600"
-          >
-            Skip animation
           </Button>
         </div>
       </div>
